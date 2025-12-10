@@ -61,22 +61,24 @@
     </script>
 
     <style>
-        body {
+        /* Prevent Page Scroll - App Feel */
+        html, body {
+            height: 100%;
+            overflow: hidden;
             -webkit-tap-highlight-color: transparent;
             -webkit-touch-callout: none;
             user-select: none;
         }
+        
         /* Anti-Zoom for iOS */
         input, textarea { font-size: 17px !important; }
         
-        /* Hide Scrollbars Everywhere */
+        /* Hide Scrollbars */
         * {
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
-        *::-webkit-scrollbar {
-            display: none;
-        }
+        *::-webkit-scrollbar { display: none; }
 
         /* Glassmorphism */
         .glass-panel {
@@ -93,11 +95,11 @@
         }
     </style>
 </head>
-<body class="bg-ios-bg dark:bg-ios-dark-bg text-ios-text dark:text-ios-dark-text min-h-screen pb-safe-offset relative overflow-x-hidden font-sans flex flex-col">
+<body class="bg-ios-bg dark:bg-ios-dark-bg text-ios-text dark:text-ios-dark-text font-sans">
 
-    <!-- Header -->
-    <header class="fixed top-0 w-full z-40 pt-safe-top glass-panel transition-all duration-300">
-        <div class="max-w-3xl mx-auto px-4 py-3 flex justify-between items-center">
+    <!-- Header (Fixed) -->
+    <header class="fixed top-0 w-full z-40 pt-safe-top glass-panel transition-all duration-300 h-16 flex items-center">
+        <div class="w-full max-w-3xl mx-auto px-4 flex justify-between items-center">
             <div class="flex items-center gap-3">
                 <button id="backBtn" class="hidden w-8 h-8 rounded-full bg-gray-100 dark:bg-zinc-800 flex items-center justify-center text-gray-500 hover:bg-gray-200 active:scale-95 transition-all">
                     <i class="ph-bold ph-arrow-left"></i>
@@ -115,12 +117,12 @@
         </div>
     </header>
 
-    <!-- Main Container -->
-    <main id="app" class="pt-20 px-4 max-w-3xl mx-auto flex-grow flex flex-col pb-6 w-full">
+    <!-- Main App Container (Full Viewport Height) -->
+    <main id="app" class="h-[100dvh] pt-20 pb-safe-bottom px-4 max-w-3xl mx-auto w-full relative flex flex-col overflow-hidden">
         
-        <!-- VIEW 1: HOME / INTRO -->
-        <div id="view-home" class="flex-grow flex flex-col justify-center animate-fade-in space-y-8">
-            <div class="text-center space-y-3">
+        <!-- VIEW 1: HOME / INTRO (Scrollable content) -->
+        <div id="view-home" class="flex-grow flex flex-col justify-center animate-fade-in space-y-6 overflow-y-auto pb-4">
+            <div class="text-center space-y-3 mt-auto mb-4">
                 <div class="w-24 h-24 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-[28px] flex items-center justify-center text-white text-5xl shadow-xl mx-auto mb-4">
                     <i class="ph-fill ph-pen-nib"></i>
                 </div>
@@ -130,7 +132,7 @@
                 </p>
             </div>
 
-            <div class="grid gap-4">
+            <div class="grid gap-3 w-full mb-auto">
                 <button onclick="navigate('view-guide')" class="bg-white dark:bg-ios-dark-card p-5 rounded-[24px] shadow-sm flex items-center gap-4 active:scale-95 transition-transform text-left group w-full">
                     <div class="w-12 h-12 rounded-full bg-orange-100 dark:bg-orange-900/20 flex items-center justify-center text-ios-orange flex-shrink-0">
                         <i class="ph-fill ph-book-open-text text-2xl"></i>
@@ -146,21 +148,17 @@
                     <div class="p-4 bg-gray-50 dark:bg-zinc-800/50 border-b border-gray-100 dark:border-zinc-800 text-xs font-bold text-gray-400 uppercase tracking-wider text-center">
                         Choose Your Challenge
                     </div>
-                    <!-- Task Selection Grid -->
                     <div class="grid grid-cols-2 divide-x divide-y divide-gray-100 dark:divide-zinc-800 border-gray-100 dark:border-zinc-800">
-                        <!-- Task 1: Short Answer -->
                         <button onclick="startSession('Flashpoint')" class="p-6 hover:bg-gray-50 dark:hover:bg-zinc-800 transition-colors flex flex-col items-center gap-2 text-center">
                             <i class="ph-fill ph-lightning text-3xl text-ios-purple"></i>
                             <span class="font-bold text-sm">Flashpoint</span>
                             <span class="text-[10px] text-gray-400">Short Response</span>
                         </button>
-                        <!-- Task 1: Letter -->
                         <button onclick="startSession('Transmission')" class="p-6 hover:bg-gray-50 dark:hover:bg-zinc-800 transition-colors flex flex-col items-center gap-2 text-center">
                             <i class="ph-fill ph-paper-plane-tilt text-3xl text-ios-green"></i>
                             <span class="font-bold text-sm">Transmission</span>
                             <span class="text-[10px] text-gray-400">Email / Letter</span>
                         </button>
-                        <!-- Task 2: Essay -->
                         <button onclick="startSession('Manifesto')" class="col-span-2 p-6 hover:bg-gray-50 dark:hover:bg-zinc-800 transition-colors flex flex-col items-center gap-2 text-center">
                             <i class="ph-fill ph-article-medium text-3xl text-ios-blue"></i>
                             <span class="font-bold text-sm">Manifesto</span>
@@ -170,67 +168,61 @@
                 </div>
             </div>
             
-            <footer class="mt-auto py-6 text-center px-4 opacity-60">
+            <footer class="py-4 text-center px-4 opacity-60">
                 <p class="text-[10px] text-gray-400 leading-snug">
-                    <strong>Disclaimer:</strong> This application is a practice tool powered by heuristics and AI. It is designed for self-improvement and is not a substitute for official language assessments.
+                    <strong>Disclaimer:</strong> AI-powered practice tool. Not an official assessment.
                 </p>
             </footer>
         </div>
 
-        <!-- VIEW 2: GUIDE -->
-        <div id="view-guide" class="hidden flex-col h-full animate-slide-up pb-10 w-full">
-            <h2 class="text-2xl font-bold mb-4">Writing Rubric</h2>
-            
-            <div class="overflow-y-auto space-y-4 pr-2 w-full">
-                <!-- Rubric Card -->
-                <div class="bg-white dark:bg-ios-dark-card rounded-[24px] p-6 shadow-sm space-y-5">
-                    <div class="flex items-center gap-2 border-b border-gray-100 dark:border-zinc-800 pb-3">
-                        <i class="ph-fill ph-list-checks text-ios-green text-2xl"></i>
-                        <h3 class="font-bold text-lg">The 4 Pillars</h3>
+        <!-- VIEW 2: GUIDE (Scrollable) -->
+        <div id="view-guide" class="hidden flex-col h-full animate-slide-up w-full overflow-y-auto pb-4">
+            <h2 class="text-2xl font-bold mb-4 flex-shrink-0">Writing Rubric</h2>
+            <div class="bg-white dark:bg-ios-dark-card rounded-[24px] p-6 shadow-sm space-y-5">
+                <div class="flex items-center gap-2 border-b border-gray-100 dark:border-zinc-800 pb-3">
+                    <i class="ph-fill ph-list-checks text-ios-green text-2xl"></i>
+                    <h3 class="font-bold text-lg">The 4 Pillars</h3>
+                </div>
+                <div class="space-y-4 text-sm">
+                    <div>
+                        <span class="font-bold text-ios-blue block mb-1">1. Task Response</span>
+                        <p class="text-gray-500 text-xs leading-relaxed">Did you answer specifically what was asked? Is your position consistent?</p>
                     </div>
-                    <div class="space-y-4 text-sm">
-                        <div>
-                            <span class="font-bold text-ios-blue block mb-1">1. Task Response</span>
-                            <p class="text-gray-500 text-xs leading-relaxed">Did you answer specifically what was asked? Is your position consistent?</p>
-                        </div>
-                        <div>
-                            <span class="font-bold text-ios-blue block mb-1">2. Flow & Structure</span>
-                            <p class="text-gray-500 text-xs leading-relaxed">Is the text logical? Do you use transitions (However, Therefore) effectively?</p>
-                        </div>
-                        <div>
-                            <span class="font-bold text-ios-blue block mb-1">3. Lexical Range</span>
-                            <p class="text-gray-500 text-xs leading-relaxed">Do you use precise vocabulary? Avoid repeating the same words.</p>
-                        </div>
-                        <div>
-                            <span class="font-bold text-ios-blue block mb-1">4. Grammar</span>
-                            <p class="text-gray-500 text-xs leading-relaxed">Use a mix of simple and complex sentence structures accurately.</p>
-                        </div>
+                    <div>
+                        <span class="font-bold text-ios-blue block mb-1">2. Flow & Structure</span>
+                        <p class="text-gray-500 text-xs leading-relaxed">Is the text logical? Do you use transitions (However, Therefore) effectively?</p>
+                    </div>
+                    <div>
+                        <span class="font-bold text-ios-blue block mb-1">3. Lexical Range</span>
+                        <p class="text-gray-500 text-xs leading-relaxed">Do you use precise vocabulary? Avoid repeating the same words.</p>
+                    </div>
+                    <div>
+                        <span class="font-bold text-ios-blue block mb-1">4. Grammar</span>
+                        <p class="text-gray-500 text-xs leading-relaxed">Use a mix of simple and complex sentence structures accurately.</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- VIEW 3: EDITOR -->
-        <div id="view-editor" class="hidden flex-col h-full animate-fade-in relative w-full">
+        <!-- VIEW 3: EDITOR (The Fixed App Layout) -->
+        <div id="view-editor" class="hidden flex-col h-full animate-fade-in w-full pb-4">
             
-            <!-- Prompt Input -->
-            <div class="mb-4">
-                <div class="bg-white dark:bg-ios-dark-card rounded-[20px] p-4 shadow-sm flex flex-col gap-2 relative w-full">
-                    <div class="flex justify-between items-center mb-1">
-                        <label class="text-[10px] font-bold uppercase text-gray-400">Topic / Prompt</label>
-                        <button onclick="setRandomTopic()" class="text-ios-blue bg-blue-50 dark:bg-blue-900/30 px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase transition-colors active:scale-95 flex items-center gap-1">
-                            <i class="ph-bold ph-dice-five text-sm"></i> Random
-                        </button>
-                    </div>
-                    
-                    <textarea id="taskPromptInput" rows="2" placeholder="Tap 'Random' or type your own topic here..." class="bg-transparent border-none outline-none text-sm font-medium w-full placeholder-gray-300 dark:placeholder-zinc-600 text-gray-800 dark:text-white resize-none"></textarea>
+            <!-- 1. Topic Container (Auto-Adjust Height, Shrinkable) -->
+            <div class="bg-white dark:bg-ios-dark-card rounded-[20px] p-4 shadow-sm flex flex-col gap-2 relative w-full mb-3 flex-shrink-0 transition-all duration-200">
+                <div class="flex justify-between items-start mb-1">
+                    <label class="text-[10px] font-bold uppercase text-gray-400 mt-1">Topic / Prompt</label>
+                    <button onclick="setRandomTopic()" class="text-ios-blue bg-blue-50 dark:bg-blue-900/30 px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase transition-colors active:scale-95 flex items-center gap-1 flex-shrink-0">
+                        <i class="ph-bold ph-dice-five text-sm"></i> Random
+                    </button>
                 </div>
+                <!-- Textarea that auto-grows -->
+                <textarea id="taskPromptInput" rows="1" oninput="autoResize(this)" placeholder="Tap 'Random' or type topic here..." class="bg-transparent border-none outline-none text-sm font-medium w-full placeholder-gray-300 dark:placeholder-zinc-600 text-gray-800 dark:text-white resize-none overflow-hidden" style="min-height: 24px; max-height: 120px;"></textarea>
             </div>
 
-            <!-- Editor Area -->
-            <div class="bg-white dark:bg-ios-dark-card rounded-[28px] shadow-sm flex flex-col flex-grow mb-20 relative overflow-hidden ring-1 ring-black/5 dark:ring-white/5 w-full">
+            <!-- 2. Editor Area (Fills remaining space) -->
+            <div class="bg-white dark:bg-ios-dark-card rounded-[28px] shadow-sm flex flex-col flex-grow relative overflow-hidden ring-1 ring-black/5 dark:ring-white/5 w-full min-h-0">
                 <!-- Toolbar -->
-                <div class="px-5 py-3 border-b border-gray-100 dark:border-zinc-800 flex justify-between items-center bg-gray-50/50 dark:bg-zinc-800/30 backdrop-blur-md">
+                <div class="px-5 py-3 border-b border-gray-100 dark:border-zinc-800 flex justify-between items-center bg-gray-50/50 dark:bg-zinc-800/30 backdrop-blur-md flex-shrink-0">
                     <div class="flex gap-4 text-[10px] font-bold uppercase tracking-wider text-gray-400">
                         <span id="editorTaskType" class="text-ios-blue">Manifesto</span>
                         <span id="wordCount">0 Words</span>
@@ -238,22 +230,23 @@
                     <button id="clearEditorBtn" class="text-[10px] font-bold uppercase text-ios-red hover:text-red-600 transition-colors">Clear</button>
                 </div>
 
-                <textarea id="editor" class="flex-grow w-full p-6 pb-28 bg-transparent border-none outline-none resize-none text-[17px] leading-8 dark:text-gray-100 placeholder-gray-300 dark:placeholder-zinc-600" placeholder="Start writing here..."></textarea>
-                
-                <!-- Analyze FAB (Moved to Bottom Right of Text Area) -->
-                <div class="absolute bottom-6 right-6 z-10">
-                    <button id="analyzeBtn" onclick="analyzeText()" class="bg-gradient-to-r from-ios-cyan to-ios-blue text-white w-auto px-6 h-14 rounded-full shadow-lg shadow-blue-500/30 flex items-center justify-center gap-2 hover:scale-105 active:scale-90 transition-all duration-300 group">
-                        <span class="text-sm font-bold tracking-wide">Analyze</span>
-                        <i class="ph-fill ph-magic-wand text-xl group-hover:rotate-12 transition-transform"></i>
-                    </button>
-                </div>
+                <!-- Textarea (Scrolls internally) -->
+                <textarea id="editor" class="flex-grow w-full p-5 bg-transparent border-none outline-none resize-none text-[17px] leading-relaxed dark:text-gray-100 placeholder-gray-300 dark:placeholder-zinc-600 overflow-y-auto" placeholder="Start writing here..."></textarea>
+            </div>
+
+            <!-- 3. Analyze Button (Fixed at Bottom, Outside Editor) -->
+            <div class="mt-3 flex-shrink-0 w-full">
+                <button id="analyzeBtn" onclick="analyzeText()" class="bg-gradient-to-r from-ios-cyan to-ios-blue text-white w-full h-14 rounded-[20px] shadow-lg shadow-blue-500/30 flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-95 transition-all duration-300 group">
+                    <span class="text-sm font-bold tracking-wide uppercase">Analyze Writing</span>
+                    <i class="ph-fill ph-magic-wand text-xl group-hover:rotate-12 transition-transform"></i>
+                </button>
             </div>
         </div>
 
         <!-- VIEW 4: ANALYSIS PANEL (Slide Up) -->
         <div id="analysisPanel" class="fixed inset-x-0 bottom-0 bg-white dark:bg-ios-dark-card rounded-t-[32px] shadow-[0_-10px_60px_rgba(0,0,0,0.15)] transform translate-y-full transition-transform duration-500 z-50 flex flex-col max-h-[90vh] max-w-3xl mx-auto border-t border-gray-100 dark:border-zinc-800">
             
-            <div class="flex justify-between items-center px-6 pt-4 pb-2 border-b border-gray-100 dark:border-zinc-800">
+            <div class="flex justify-between items-center px-6 pt-4 pb-2 border-b border-gray-100 dark:border-zinc-800 flex-shrink-0">
                 <h3 class="text-sm font-bold text-gray-500 uppercase tracking-wider">Results</h3>
                 <button onclick="closePanel()" class="w-8 h-8 rounded-full bg-gray-100 dark:bg-zinc-800 flex items-center justify-center text-gray-500 hover:text-ios-blue transition-colors">
                     <i class="ph-bold ph-x"></i>
@@ -281,9 +274,7 @@
                     </div>
 
                     <!-- Interactive Feedback Cards -->
-                    <div id="feedbackContainer" class="space-y-4 w-full">
-                        <!-- Content injected by JS -->
-                    </div>
+                    <div id="feedbackContainer" class="space-y-4 w-full"></div>
                     
                     <!-- Polished Rewrite -->
                     <div class="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/10 dark:to-indigo-900/10 p-6 rounded-[24px] border border-blue-100 dark:border-blue-900/30 w-full">
@@ -336,7 +327,7 @@
 
     <script>
         // --- CONSTANTS ---
-        const APP_ID = 'writing_lab_v5';
+        const APP_ID = 'writing_lab_v6';
         
         const TASKS = {
             'Flashpoint': [
@@ -354,7 +345,13 @@
                 "What kind of music do you like and why?",
                 "Describe a skill you would like to learn in the future.",
                 "What are the advantages of using public transport?",
-                "Describe your favorite room in your house."
+                "Describe your favorite room in your house.",
+                "Describe a book that has had a major influence on you.",
+                "What are the main benefits of working in a team?",
+                "Describe a historical place you would like to visit.",
+                "What is your favorite way to relax after a busy day?",
+                "Explain the importance of punctuality in your culture.",
+                "Describe a memorable gift you received as a child."
             ],
             'Transmission': [
                 "Write an email to a friend apologizing for missing their birthday party. Explain why you couldn't make it.",
@@ -371,7 +368,12 @@
                 "Write an email to a friend cancelling a planned trip due to illness.",
                 "Write a formal letter of resignation to your employer.",
                 "Write a letter to a bank manager inquiring about a loan.",
-                "Write an email to a friend describing a new movie you saw."
+                "Write an email to a friend describing a new movie you saw.",
+                "Write a letter to a restaurant manager about poor service you received.",
+                "Write an email to a coworker asking for help with a project.",
+                "Write a letter to your local council about recycling facilities.",
+                "Write an email to a friend recommending a new tech gadget.",
+                "Write a formal letter to a university requesting information about a course."
             ],
             'Manifesto': [
                 "Some people believe that the best way to control crime is to increase the length of prison sentences. Others believe that there are better ways to deal with crimes. Discuss both views and give your opinion.",
@@ -388,7 +390,12 @@
                 "Fast food is becoming more popular. What are the effects of this on society?",
                 "Should public transport be free? Discuss the economic and social impacts.",
                 "Is it the responsibility of the government or individuals to protect the environment?",
-                "Do video games have a positive or negative effect on children?"
+                "Do video games have a positive or negative effect on children?",
+                "Some people think that social media has a negative impact on mental health. To what extent do you agree?",
+                "Should students be required to wear school uniforms? Discuss the advantages and disadvantages.",
+                "Is it better to work for a large company or a small business? Discuss both views.",
+                "Some people believe that museums and art galleries should be free for everyone. Do you agree or disagree?",
+                "Should governments ban the use of plastic bags to protect the environment?"
             ]
         };
 
@@ -454,6 +461,7 @@
             document.getElementById('editorTaskType').innerText = taskType;
             els.editor.value = '';
             els.promptInput.value = '';
+            autoResize(els.promptInput);
             updateWordCount();
             navigate('view-editor');
         }
@@ -463,7 +471,13 @@
             if(tasks && tasks.length > 0) {
                 const random = tasks[Math.floor(Math.random() * tasks.length)];
                 els.promptInput.value = random;
+                autoResize(els.promptInput);
             }
+        }
+
+        function autoResize(el) {
+            el.style.height = 'auto';
+            el.style.height = el.scrollHeight + 'px';
         }
 
         // --- EDITOR LOGIC ---
@@ -526,14 +540,22 @@
 
         async function runOnlineAnalysis(text, prompt, model) {
             const systemPrompt = `
-                You are a Professional Writing Examiner. 
+                You are a strict Professional Writing Examiner. 
                 Task Mode: ${state.currentTask}.
                 Topic: "${prompt}".
+                User Text: "${text}".
+
+                First, evaluate the TASK RESPONSE. Does the user's text directly address the Topic?
+                - If the text is grammatically correct but completely unrelated to the Topic, the score MUST be below 40%.
+                - If the text is tangentially related but misses the core prompt, penalize heavily.
                 
-                Analyze the writing based on standard English proficiency rubrics. Return a JSON object with:
-                1. "percentage_score": A realistic proficiency score number (0-100). 
-                2. "feedback_items": An array of objects { "type": "success"|"warning"|"error", "title": "Short Header", "content": "Specific advice or correction" }. Limit to 4 key items.
-                3. "rewrite": A polished, high-proficiency version of the text maintaining the original meaning.
+                Analyze based on standard proficiency rubrics (Task Response, Coherence, Lexical Resource, Grammar).
+                
+                Return a JSON object with:
+                1. "percentage_score": A realistic score (0-100). (REMINDER: Give < 40 if off-topic).
+                2. "feedback_items": An array of objects { "type": "success"|"warning"|"error", "title": "Short Header", "content": "Specific advice" }. 
+                   - If off-topic, the first item must be an error about Task Response.
+                3. "rewrite": A polished version. If off-topic, rewrite it to actually answer the prompt while keeping the user's style if possible, or provide a model answer for the correct topic.
             `;
             
             const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${state.apiKey}`;
@@ -665,5 +687,3 @@
     </script>
 </body>
 </html>
-
-
