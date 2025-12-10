@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#F2F2F7">
+    <title>Writing Lab | BentoBoard</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <!-- Markdown Parser -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <!-- Font: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'media',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        ios: {
+                            bg: '#F2F2F7',
+                            card: '#FFFFFF',
+                            text: '#000000',
+                            blue: '#007AFF',
+                            cyan: '#32ADE6',
+                            green: '#34C759',
+                            yellow: '#FFCC00',
+                            orange: '#FF9500',
+                            red: '#FF3B30',
+                            purple: '#AF52DE',
+                            gray: '#8E8E93',
+                            dark: { bg: '#000000', card: '#1C1C1E', text: '#FFFFFF' }
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.3s ease-out',
+                        'slide-up': 'slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            user-select: none;
+        }
+        /* Anti-Zoom for iOS */
+        input, textarea { font-size: 17px !important; }
+        
+        /* Hide Scrollbars Everywhere */
+        * {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        *::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Glassmorphism */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        @media (prefers-color-scheme: dark) {
+            .glass-panel {
+                background: rgba(28, 28, 30, 0.85);
+                border-bottom: 1px solid rgba(255,255,255,0.1);
+            }
+        }
+    </style>
+</head>
+<body class="bg-ios-bg dark:bg-ios-dark-bg text-ios-text dark:text-ios-dark-text min-h-screen pb-safe-offset relative overflow-x-hidden font-sans flex flex-col">
+
+    <!-- Header -->
+    <header class="fixed top-0 w-full z-40 pt-safe-top glass-panel transition-all duration-300">
+        <div class="max-w-3xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <button id="backBtn" class="hidden w-8 h-8 rounded-full bg-gray-100 dark:bg-zinc-800 flex items-center justify-center text-gray-500 hover:bg-gray-200 active:scale-95 transition-all">
+                    <i class="ph-bold ph-arrow-left"></i>
+                </button>
+                <div>
+                    <h1 class="font-bold text-lg leading-none flex items-center gap-2" id="headerTitle">
+                        Writing Lab <i class="ph-fill ph-pen-nib text-ios-cyan"></i>
+                    </h1>
+                    <span id="connectionStatus" class="text-[10px] font-semibold text-ios-orange uppercase tracking-wide">API Key Required</span>
+                </div>
+            </div>
+            <button id="settingsBtn" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 text-ios-cyan transition-colors">
+                <i class="ph-fill ph-gear text-xl"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main id="app" class="pt-20 px-4 max-w-3xl mx-auto flex-grow flex flex-col pb-6 w-full">
+        
+        <!-- VIEW 1: HOME / INTRO -->
+        <div id="view-home" class="flex-grow flex flex-col justify-center animate-fade-in space-y-8">
+            <div class="text-center space-y-3">
+                <div class="w-24 h-24 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-[28px] flex items-center justify-center text-white text-5xl shadow-xl mx-auto mb-4">
+                    <i class="ph-fill ph-pen-nib"></i>
+                </div>
+                <h2 class="text-3xl font-bold tracking-tight">Proficiency Practice</h2>
+                <p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed max-w-sm mx-auto">
+                    Sharpen your writing skills with AI-powered feedback. Connect your API key to start.
+                </p>
+            </div>
+
+            <div class="grid gap-4">
+                <button onclick="navigate('view-guide')" class="bg-white dark:bg-ios-dark-card p-5 rounded-[24px] shadow-sm flex items-center gap-4 active:scale-95 transition-transform text-left group w-full">
+                    <div class="w-12 h-12 rounded-full bg-orange-100 dark:bg-orange-900/20 flex items-center justify-center text-ios-orange flex-shrink-0">
+                        <i class="ph-fill ph-book-open-text text-2xl"></i>
+                    </div>
+                    <div class="flex-grow">
+                        <div class="font-bold text-lg group-hover:text-ios-orange transition-colors">Assessment Guide</div>
+                        <div class="text-sm text-gray-400">Understanding Rubrics</div>
+                    </div>
+                    <i class="ph-bold ph-caret-right ml-auto text-gray-300"></i>
+                </button>
+
+                <div class="bg-white dark:bg-ios-dark-card rounded-[24px] shadow-sm overflow-hidden w-full">
+                    <div class="p-4 bg-gray-50 dark:bg-zinc-800/50 border-b border-gray-100 dark:border-zinc-800 text-xs font-bold text-gray-400 uppercase tracking-wider text-center">
+                        Choose Your Challenge
+                    </div>
+                    <!-- Task Selection Grid -->
+                    <div class="grid grid-cols-2 divide-x divide-y divide-gray-100 dark:divide-zinc-800 border-gray-100 dark:border-zinc-800">
+                        <!-- Task 1: Short Answer -->
+                        <button onclick="startSession('Flashpoint')" class="p-6 hover:bg-gray-50 dark:hover:bg-zinc-800 transition-colors flex flex-col items-center gap-2 text-center">
+                            <i class="ph-fill ph-lightning text-3xl text-ios-purple"></i>
+                            <span class="font-bold text-sm">Flashpoint</span>
+                            <span class="text-[10px] text-gray-400">Short Response</span>
+                        </button>
+                        <!-- Task 1: Letter -->
+                        <button onclick="startSession('Transmission')" class="p-6 hover:bg-gray-50 dark:hover:bg-zinc-800 transition-colors flex flex-col items-center gap-2 text-center">
+                            <i class="ph-fill ph-paper-plane-tilt text-3xl text-ios-green"></i>
+                            <span class="font-bold text-sm">Transmission</span>
+                            <span class="text-[10px] text-gray-400">Email / Letter</span>
+                        </button>
+                        <!-- Task 2: Essay -->
+                        <button onclick="startSession('Manifesto')" class="col-span-2 p-6 hover:bg-gray-50 dark:hover:bg-zinc-800 transition-colors flex flex-col items-center gap-2 text-center">
+                            <i class="ph-fill ph-article-medium text-3xl text-ios-blue"></i>
+                            <span class="font-bold text-sm">Manifesto</span>
+                            <span class="text-[10px] text-gray-400">Long-form Essay</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <footer class="mt-auto py-6 text-center px-4 opacity-60">
+                <p class="text-[10px] text-gray-400 leading-snug">
+                    <strong>Disclaimer:</strong> This application is a practice tool powered by heuristics and AI. It is designed for self-improvement and is not a substitute for official language assessments.
+                </p>
+            </footer>
+        </div>
+
+        <!-- VIEW 2: GUIDE -->
+        <div id="view-guide" class="hidden flex-col h-full animate-slide-up pb-10 w-full">
+            <h2 class="text-2xl font-bold mb-4">Writing Rubric</h2>
+            
+            <div class="overflow-y-auto space-y-4 pr-2 w-full">
+                <!-- Rubric Card -->
+                <div class="bg-white dark:bg-ios-dark-card rounded-[24px] p-6 shadow-sm space-y-5">
+                    <div class="flex items-center gap-2 border-b border-gray-100 dark:border-zinc-800 pb-3">
+                        <i class="ph-fill ph-list-checks text-ios-green text-2xl"></i>
+                        <h3 class="font-bold text-lg">The 4 Pillars</h3>
+                    </div>
+                    <div class="space-y-4 text-sm">
+                        <div>
+                            <span class="font-bold text-ios-blue block mb-1">1. Task Response</span>
+                            <p class="text-gray-500 text-xs leading-relaxed">Did you answer specifically what was asked? Is your position consistent?</p>
+                        </div>
+                        <div>
+                            <span class="font-bold text-ios-blue block mb-1">2. Flow & Structure</span>
+                            <p class="text-gray-500 text-xs leading-relaxed">Is the text logical? Do you use transitions (However, Therefore) effectively?</p>
+                        </div>
+                        <div>
+                            <span class="font-bold text-ios-blue block mb-1">3. Lexical Range</span>
+                            <p class="text-gray-500 text-xs leading-relaxed">Do you use precise vocabulary? Avoid repeating the same words.</p>
+                        </div>
+                        <div>
+                            <span class="font-bold text-ios-blue block mb-1">4. Grammar</span>
+                            <p class="text-gray-500 text-xs leading-relaxed">Use a mix of simple and complex sentence structures accurately.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW 3: EDITOR -->
+        <div id="view-editor" class="hidden flex-col h-full animate-fade-in relative w-full">
+            
+            <!-- Prompt Input -->
+            <div class="mb-4">
+                <div class="bg-white dark:bg-ios-dark-card rounded-[20px] p-4 shadow-sm flex flex-col gap-2 relative w-full">
+                    <div class="flex justify-between items-center mb-1">
+                        <label class="text-[10px] font-bold uppercase text-gray-400">Topic / Prompt</label>
+                        <button onclick="setRandomTopic()" class="text-ios-blue bg-blue-50 dark:bg-blue-900/30 px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase transition-colors active:scale-95 flex items-center gap-1">
+                            <i class="ph-bold ph-dice-five text-sm"></i> Random
+                        </button>
+                    </div>
+                    
+                    <textarea id="taskPromptInput" rows="2" placeholder="Tap 'Random' or type your own topic here..." class="bg-transparent border-none outline-none text-sm font-medium w-full placeholder-gray-300 dark:placeholder-zinc-600 text-gray-800 dark:text-white resize-none"></textarea>
+                </div>
+            </div>
+
+            <!-- Editor Area -->
+            <div class="bg-white dark:bg-ios-dark-card rounded-[28px] shadow-sm flex flex-col flex-grow mb-20 relative overflow-hidden ring-1 ring-black/5 dark:ring-white/5 w-full">
+                <!-- Toolbar -->
+                <div class="px-5 py-3 border-b border-gray-100 dark:border-zinc-800 flex justify-between items-center bg-gray-50/50 dark:bg-zinc-800/30 backdrop-blur-md">
+                    <div class="flex gap-4 text-[10px] font-bold uppercase tracking-wider text-gray-400">
+                        <span id="editorTaskType" class="text-ios-blue">Manifesto</span>
+                        <span id="wordCount">0 Words</span>
+                    </div>
+                    <button id="clearEditorBtn" class="text-[10px] font-bold uppercase text-ios-red hover:text-red-600 transition-colors">Clear</button>
+                </div>
+
+                <textarea id="editor" class="flex-grow w-full p-6 pb-28 bg-transparent border-none outline-none resize-none text-[17px] leading-8 dark:text-gray-100 placeholder-gray-300 dark:placeholder-zinc-600" placeholder="Start writing here..."></textarea>
+                
+                <!-- Analyze FAB (Moved to Bottom Right of Text Area) -->
+                <div class="absolute bottom-6 right-6 z-10">
+                    <button id="analyzeBtn" onclick="analyzeText()" class="bg-gradient-to-r from-ios-cyan to-ios-blue text-white w-auto px-6 h-14 rounded-full shadow-lg shadow-blue-500/30 flex items-center justify-center gap-2 hover:scale-105 active:scale-90 transition-all duration-300 group">
+                        <span class="text-sm font-bold tracking-wide">Analyze</span>
+                        <i class="ph-fill ph-magic-wand text-xl group-hover:rotate-12 transition-transform"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW 4: ANALYSIS PANEL (Slide Up) -->
+        <div id="analysisPanel" class="fixed inset-x-0 bottom-0 bg-white dark:bg-ios-dark-card rounded-t-[32px] shadow-[0_-10px_60px_rgba(0,0,0,0.15)] transform translate-y-full transition-transform duration-500 z-50 flex flex-col max-h-[90vh] max-w-3xl mx-auto border-t border-gray-100 dark:border-zinc-800">
+            
+            <div class="flex justify-between items-center px-6 pt-4 pb-2 border-b border-gray-100 dark:border-zinc-800">
+                <h3 class="text-sm font-bold text-gray-500 uppercase tracking-wider">Results</h3>
+                <button onclick="closePanel()" class="w-8 h-8 rounded-full bg-gray-100 dark:bg-zinc-800 flex items-center justify-center text-gray-500 hover:text-ios-blue transition-colors">
+                    <i class="ph-bold ph-x"></i>
+                </button>
+            </div>
+
+            <div class="px-6 pb-6 pt-4 overflow-y-auto h-full w-full">
+                <!-- Loader -->
+                <div id="loadingState" class="hidden py-16 flex flex-col items-center justify-center text-center space-y-4">
+                    <div class="relative">
+                        <div class="w-16 h-16 border-4 border-gray-100 dark:border-zinc-800 rounded-full"></div>
+                        <div class="absolute inset-0 w-16 h-16 border-4 border-ios-cyan border-t-transparent rounded-full animate-spin"></div>
+                    </div>
+                    <p class="text-xs font-bold uppercase tracking-wider text-gray-400 animate-pulse">Examiner Grading...</p>
+                </div>
+
+                <!-- Results -->
+                <div id="resultsContent" class="hidden space-y-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <div class="text-[10px] font-bold uppercase text-gray-400">Total Score</div>
+                            <h2 class="text-4xl font-black tracking-tight" id="bandScore">--</h2>
+                        </div>
+                        <div id="modeBadge" class="px-3 py-1 rounded-full bg-blue-100 text-ios-blue text-xs font-bold uppercase">Examiner Review</div>
+                    </div>
+
+                    <!-- Interactive Feedback Cards -->
+                    <div id="feedbackContainer" class="space-y-4 w-full">
+                        <!-- Content injected by JS -->
+                    </div>
+                    
+                    <!-- Polished Rewrite -->
+                    <div class="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/10 dark:to-indigo-900/10 p-6 rounded-[24px] border border-blue-100 dark:border-blue-900/30 w-full">
+                        <h3 class="text-xs font-bold text-ios-blue uppercase tracking-wide mb-3 flex items-center gap-2">
+                            <i class="ph-fill ph-sparkle"></i> Refined Version
+                        </h3>
+                        <p id="rewriteText" class="text-[15px] leading-relaxed text-slate-700 dark:text-slate-300 italic"></p>
+                    </div>
+
+                    <div class="h-10"></div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white dark:bg-zinc-900 w-[90%] max-w-sm rounded-[28px] shadow-2xl overflow-hidden transform scale-95 transition-transform duration-300">
+            <div class="p-5 border-b border-gray-100 dark:border-zinc-800 flex justify-between items-center bg-gray-50/50 dark:bg-zinc-800/50">
+                <h3 class="font-bold text-lg">Settings</h3>
+                <button onclick="toggleSettings(false)" class="w-8 h-8 rounded-full bg-gray-200 dark:bg-zinc-700 flex items-center justify-center text-gray-500">
+                    <i class="ph-bold ph-x"></i>
+                </button>
+            </div>
+            <div class="p-6 space-y-5">
+                <div>
+                    <label class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 block">Gemini API Key</label>
+                    <input type="password" id="apiKeyInput" placeholder="Paste API Key here..." class="w-full px-4 py-3 bg-gray-100 dark:bg-zinc-800 rounded-xl text-sm outline-none focus:ring-2 focus:ring-ios-cyan transition-all">
+                    <p class="text-[10px] text-gray-400 mt-2">
+                        An API key is <strong>required</strong> for grading, feedback, and rewriting. Your key is stored locally on this device.
+                    </p>
+                    <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-[10px] font-bold text-ios-blue hover:underline flex items-center gap-1 mt-1">
+                        Don't have a key? Get one from Google AI Studio <i class="ph-bold ph-arrow-square-out"></i>
+                    </a>
+                </div>
+                <div class="flex justify-end pt-2">
+                    <button onclick="saveApiKey()" class="bg-black dark:bg-white text-white dark:text-black px-6 py-3 rounded-xl text-sm font-bold shadow-lg active:scale-95 transition-transform">
+                        Save & Connect
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="fixed top-6 left-1/2 transform -translate-x-1/2 bg-zinc-800 dark:bg-white text-white dark:text-black px-6 py-3 rounded-full shadow-2xl text-xs font-bold opacity-0 pointer-events-none transition-all duration-300 z-[70] flex items-center gap-2 translate-y-[-20px]">
+        <i class="ph-fill ph-check-circle text-green-500 text-lg"></i> <span id="toastMsg">Saved</span>
+    </div>
+
+    <script>
+        // --- CONSTANTS ---
+        const APP_ID = 'writing_lab_v5';
+        
+        const TASKS = {
+            'Flashpoint': [
+                "Describe your favorite hobby and why you enjoy it.",
+                "What are the benefits of reading physical books versus e-books?",
+                "Describe a memorable holiday you went on.",
+                "Why is it important to learn a second language?",
+                "What is your favorite type of weather and why?",
+                "Describe your hometown and what makes it special.",
+                "What is the most useful app on your phone and why?",
+                "Describe a person who has influenced you positively.",
+                "What is your favorite meal of the day and why?",
+                "Explain why regular exercise is important.",
+                "Describe a traditional festival in your country.",
+                "What kind of music do you like and why?",
+                "Describe a skill you would like to learn in the future.",
+                "What are the advantages of using public transport?",
+                "Describe your favorite room in your house."
+            ],
+            'Transmission': [
+                "Write an email to a friend apologizing for missing their birthday party. Explain why you couldn't make it.",
+                "Write a formal letter to your landlord complaining about a broken heater in your apartment.",
+                "Write a letter to your manager requesting time off for a family emergency.",
+                "Write an email to a professor asking for an extension on an assignment deadline.",
+                "Write a letter to a local newspaper editor about the traffic problems in your city.",
+                "Write a letter to a friend inviting them to visit your country during the holidays.",
+                "Write a formal complaint letter to an airline about lost luggage.",
+                "Write a letter to a neighbor about their dog barking loudly at night.",
+                "Write an email to a colleague congratulating them on a promotion.",
+                "Write a letter to your local library suggesting new books to purchase.",
+                "Write a letter to a hotel manager praising a specific staff member.",
+                "Write an email to a friend cancelling a planned trip due to illness.",
+                "Write a formal letter of resignation to your employer.",
+                "Write a letter to a bank manager inquiring about a loan.",
+                "Write an email to a friend describing a new movie you saw."
+            ],
+            'Manifesto': [
+                "Some people believe that the best way to control crime is to increase the length of prison sentences. Others believe that there are better ways to deal with crimes. Discuss both views and give your opinion.",
+                "Ideally, everyone should have a car, a television, and a fridge. Do the disadvantages of this development for society outweigh the advantages?",
+                "Many people say that the only way to guarantee a good job is to complete a course of university education. To what extent do you agree or disagree?",
+                "In many countries, people are living longer than ever before. Discuss the advantages and disadvantages of an ageing population.",
+                "Technological progress has made our lives easier, but it has also made us more isolated. Do you agree or disagree?",
+                "Governments should spend more money on space exploration. To what extent do you agree or disagree?",
+                "Some people think that children should learn to play a musical instrument at school. Others think it is a waste of time. Discuss both views.",
+                "The internet has transformed the way we work. What are the advantages and disadvantages of this?",
+                "Should university education be free for everyone? Discuss the pros and cons.",
+                "Is it better to live in a big city or a small village? Give your opinion.",
+                "Some argue that zoos are cruel and should be closed. Others believe they are important for conservation. Discuss both views.",
+                "Fast food is becoming more popular. What are the effects of this on society?",
+                "Should public transport be free? Discuss the economic and social impacts.",
+                "Is it the responsibility of the government or individuals to protect the environment?",
+                "Do video games have a positive or negative effect on children?"
+            ]
+        };
+
+        const state = {
+            apiKey: localStorage.getItem(`${APP_ID}_key`) || '',
+            currentTask: 'Manifesto',
+            currentView: 'view-home'
+        };
+
+        // --- DOM REFS ---
+        const els = {
+            headerTitle: document.getElementById('headerTitle'),
+            backBtn: document.getElementById('backBtn'),
+            views: {
+                home: document.getElementById('view-home'),
+                guide: document.getElementById('view-guide'),
+                editor: document.getElementById('view-editor')
+            },
+            editor: document.getElementById('editor'),
+            promptInput: document.getElementById('taskPromptInput'),
+            wordCount: document.getElementById('wordCount'),
+            panel: document.getElementById('analysisPanel'),
+            loading: document.getElementById('loadingState'),
+            results: document.getElementById('resultsContent'),
+            feedbackContainer: document.getElementById('feedbackContainer'),
+            rewriteText: document.getElementById('rewriteText'),
+            bandScore: document.getElementById('bandScore'),
+            modal: document.getElementById('settingsModal'),
+            apiKeyInput: document.getElementById('apiKeyInput'),
+            status: document.getElementById('connectionStatus')
+        };
+
+        // --- NAVIGATION ---
+        function navigate(viewId) {
+            // Hide all
+            Object.values(els.views).forEach(el => {
+                el.classList.add('hidden');
+                el.classList.remove('flex');
+            });
+            
+            // Show Target
+            const target = document.getElementById(viewId);
+            target.classList.remove('hidden');
+            target.classList.add('flex');
+            
+            state.currentView = viewId;
+
+            // Header Logic
+            if(viewId === 'view-home') {
+                els.backBtn.classList.add('hidden');
+                els.headerTitle.innerHTML = `Writing Lab <i class="ph-fill ph-pen-nib text-ios-cyan"></i>`;
+            } else {
+                els.backBtn.classList.remove('hidden');
+                if(viewId === 'view-guide') els.headerTitle.innerText = "Guide";
+                if(viewId === 'view-editor') els.headerTitle.innerText = state.currentTask;
+            }
+        }
+
+        els.backBtn.addEventListener('click', () => navigate('view-home'));
+
+        function startSession(taskType) {
+            state.currentTask = taskType;
+            document.getElementById('editorTaskType').innerText = taskType;
+            els.editor.value = '';
+            els.promptInput.value = '';
+            updateWordCount();
+            navigate('view-editor');
+        }
+
+        function setRandomTopic() {
+            const tasks = TASKS[state.currentTask];
+            if(tasks && tasks.length > 0) {
+                const random = tasks[Math.floor(Math.random() * tasks.length)];
+                els.promptInput.value = random;
+            }
+        }
+
+        // --- EDITOR LOGIC ---
+        els.editor.addEventListener('input', updateWordCount);
+        document.getElementById('clearEditorBtn').addEventListener('click', () => {
+            els.editor.value = '';
+            updateWordCount();
+        });
+
+        function updateWordCount() {
+            const text = els.editor.value.trim();
+            const count = text ? text.split(/\s+/).length : 0;
+            els.wordCount.innerText = `${count} Words`;
+            
+            // Color code word count suggestion
+            let min = 150;
+            if (state.currentTask === 'Manifesto') min = 250;
+            if (state.currentTask === 'Flashpoint') min = 50;
+
+            if(count < min) els.wordCount.classList.add('text-ios-red');
+            else els.wordCount.classList.remove('text-ios-red');
+        }
+
+        // --- ANALYSIS ENGINE (API ONLY) ---
+
+        async function analyzeText() {
+            if(!state.apiKey) {
+                toggleSettings(true);
+                return;
+            }
+
+            const text = els.editor.value.trim();
+            const prompt = els.promptInput.value.trim() || "General Topic";
+            
+            if(!text) {
+                showToast("Please write something first", "error");
+                return;
+            }
+
+            openPanel();
+            showLoading();
+
+            try {
+                // Try Model 2.5
+                try {
+                    const data = await runOnlineAnalysis(text, prompt, 'gemini-2.5-flash-preview-09-2025');
+                    renderFeedback(data);
+                } catch (e) {
+                    console.warn("2.5 Failed, switching to 1.5", e);
+                    // Fallback to Model 1.5
+                    const data = await runOnlineAnalysis(text, prompt, 'gemini-1.5-flash');
+                    renderFeedback(data);
+                }
+            } catch (e) {
+                console.error(e);
+                closePanel();
+                showToast("API Connection Failed", "error");
+            }
+        }
+
+        async function runOnlineAnalysis(text, prompt, model) {
+            const systemPrompt = `
+                You are a Professional Writing Examiner. 
+                Task Mode: ${state.currentTask}.
+                Topic: "${prompt}".
+                
+                Analyze the writing based on standard English proficiency rubrics. Return a JSON object with:
+                1. "percentage_score": A realistic proficiency score number (0-100). 
+                2. "feedback_items": An array of objects { "type": "success"|"warning"|"error", "title": "Short Header", "content": "Specific advice or correction" }. Limit to 4 key items.
+                3. "rewrite": A polished, high-proficiency version of the text maintaining the original meaning.
+            `;
+            
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${state.apiKey}`;
+            const res = await fetch(url, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    contents: [{parts: [{text: text}]}],
+                    systemInstruction: { parts: [{ text: systemPrompt }] },
+                    generationConfig: { responseMimeType: "application/json" }
+                })
+            });
+
+            if(!res.ok) throw new Error("API Error");
+            const json = await res.json();
+            return JSON.parse(json.candidates[0].content.parts[0].text);
+        }
+
+        function renderFeedback(data) {
+            els.loading.classList.add('hidden');
+            els.results.classList.remove('hidden');
+            
+            // Percentage Score Logic
+            let score = data.percentage_score;
+            let colorClass = 'text-ios-red'; // Default <= 75
+
+            if (score >= 90) colorClass = 'text-ios-green';
+            else if (score >= 86) colorClass = 'text-ios-blue';
+            else if (score >= 80) colorClass = 'text-ios-yellow';
+            else if (score >= 76) colorClass = 'text-ios-orange';
+
+            els.bandScore.innerText = `${score}%`;
+            els.bandScore.className = `text-4xl font-black tracking-tight ${colorClass}`;
+
+            // Generate Cards
+            els.feedbackContainer.innerHTML = data.feedback_items.map(item => {
+                let colorClass = 'bg-gray-50 border-gray-100 text-gray-700';
+                let icon = 'ph-info';
+                
+                if(item.type === 'error') { colorClass = 'bg-red-50 border-red-100 text-red-700'; icon = 'ph-warning-circle'; }
+                if(item.type === 'warning') { colorClass = 'bg-orange-50 border-orange-100 text-orange-700'; icon = 'ph-warning'; }
+                if(item.type === 'success') { colorClass = 'bg-green-50 border-green-100 text-green-700'; icon = 'ph-check-circle'; }
+
+                return `
+                    <div class="${colorClass} border p-4 rounded-[18px] dark:bg-opacity-10 w-full">
+                        <div class="flex items-center gap-2 mb-1 font-bold text-sm">
+                            <i class="ph-fill ${icon} text-lg"></i>
+                            ${item.title}
+                        </div>
+                        <p class="text-xs opacity-90 leading-relaxed">${item.content}</p>
+                    </div>
+                `;
+            }).join('');
+
+            els.rewriteText.innerText = data.rewrite;
+        }
+
+        // --- PANEL UI ---
+        function openPanel() {
+            els.panel.classList.remove('translate-y-full');
+        }
+        function closePanel() {
+            els.panel.classList.add('translate-y-full');
+            setTimeout(() => {
+                els.loading.classList.remove('hidden');
+                els.results.classList.add('hidden');
+            }, 500);
+        }
+        function showLoading() {
+            els.loading.classList.remove('hidden');
+            els.results.classList.add('hidden');
+        }
+
+        // --- SETTINGS ---
+        function toggleSettings(show) {
+            const m = els.modal;
+            if(show) {
+                m.classList.remove('hidden');
+                requestAnimationFrame(() => m.classList.remove('opacity-0'));
+                els.apiKeyInput.value = state.apiKey;
+            } else {
+                m.classList.add('opacity-0');
+                setTimeout(() => m.classList.add('hidden'), 300);
+            }
+        }
+        document.getElementById('settingsBtn').addEventListener('click', () => toggleSettings(true));
+
+        function saveApiKey() {
+            const key = els.apiKeyInput.value.trim();
+            state.apiKey = key;
+            localStorage.setItem(`${APP_ID}_key`, key);
+            updateStatus();
+            toggleSettings(false);
+            showToast("Key Saved");
+        }
+
+        function updateStatus() {
+            if (state.apiKey) {
+                els.status.textContent = '● Live';
+                els.status.className = 'text-[10px] font-bold text-green-600 bg-green-100 dark:bg-green-900/30 px-2 py-0.5 rounded-full transition-colors';
+            } else {
+                els.status.textContent = '○ API Key Missing';
+                els.status.className = 'text-[10px] font-bold text-orange-500 bg-orange-100 dark:bg-orange-900/30 px-2 py-0.5 rounded-full transition-colors';
+            }
+        }
+
+        function showToast(msg, type = 'success') {
+            const t = document.getElementById('toast');
+            const icon = t.querySelector('i');
+            document.getElementById('toastMsg').innerText = msg;
+            
+            if(type === 'error') {
+                icon.className = 'ph-fill ph-warning-circle text-red-500 text-lg';
+            } else {
+                icon.className = 'ph-fill ph-check-circle text-green-500 text-lg';
+            }
+
+            t.style.opacity = '1';
+            t.style.transform = 'translate(-50%, 0)';
+            setTimeout(() => {
+                t.style.opacity = '0';
+                t.style.transform = 'translate(-50%, -20px)';
+            }, 3000);
+        }
+
+        // Init
+        updateStatus();
+
+    </script>
+</body>
+</html>
+
+
